@@ -73,18 +73,51 @@ function lrTurnOff(zone)
 end
 
 --[[
-  Make a randomly between min and max values
+  Make a random time between min and max values
   ]]
 function lrMakeTime(min,max)
 
-    minBits = lrSplit(min, "[:]+")
-    maxBits = lrSplit(max, "[:]+")
+    local upper, lower, lowerDelta, upperDelta = nil
+    if max == "sunrise" then
+        upper = luup.sunrise()
+    elseif max == "sunset" then
+        upper = luup.sunset()
+    elseif string.match( max, "^([%-%+])(%d+)" ) then
+        sym, upperDelta = string.match( max, "^([%-%+])(%d+)" ) 
+        if sym == "-" then
+            luup.log("Schedule prob, max should not be -, we'll assume + ",25)
+        end
+    else
+        maxBits = lrSplit(max, "[:]+")
+        upper = os.time({year=os.date('%Y'), month=os.date('%m'),
+                         day=os.date('%d'), hour=maxBits[1], min=maxBits[2],
+                         sec=maxBits[3]})
+    end
 
-    lower = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=minBits[1], min=minBits[2], sec=minBits[3]})
-    upper = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=maxBits[1], min=maxBits[2], sec=maxBits[3]})
+    if min == "sunrise" then
+        lower = luup.sunrise()
+    elseif min == "sunset" then
+        lower = luup.sunset()
+    elseif string.match( min, "^([%-%+])(%d+)" ) then
+        sym, lowerDelta = string.match( min, "^([%-%+])(%d+)" )
+        if sym == "+" then
+            luup.log("Schedule prob, min should not be +, we'll assume - ",25)
+        end
+        lower = upper - ( lowerDelta * 60 )
+    else
+        minBits = lrSplit(min, "[:]+")
+        lower = os.time({year=os.date('%Y'), month=os.date('%m'),
+                         day=os.date('%d'), hour=minBits[1], min=minBits[2],
+                         sec=minBits[3]})
+    end
+
+    if upperDelta and not upper then
+       -- this is the case where we have a delta from lower, and needed to
+       -- wait until after lower is calculated
+       upper = lower + ( upperDelta * 60 )
+    end
 
     diff = upper - lower;
-
     -- math.randomseed(os.time())
     math.randomseed( tonumber(tostring(os.time()):reverse():sub(1,6)) )
     return lower + math.random(0,diff)

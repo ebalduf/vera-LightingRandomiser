@@ -2,10 +2,10 @@ lrMyScedule = [[
 [
     {
         "zone": "lounge",
-        "minOn": "20:00:00",
-        "maxOn": "20:15:00",
-        "minOff": "21:00:00",
-        "maxOff": "22:00:00"
+        "minOn": "sunset",
+        "maxOn": "+75",
+        "minOff": "23:00:00",
+        "maxOff": "23:59:00"
     },
     {
         "zone": "porch",

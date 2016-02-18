@@ -14,6 +14,16 @@ function luup.log(msg,lvl)
     print("LOG "..lvl..": "..msg)
 end
 
+function luup.sunrise()
+   --- '08:01:02'
+   return os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=8, min=1, sec=2})
+end
+
+function luup.sunset()
+   --- '19:45:46'
+   return os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=19, min=45, sec=46})
+end
+
 function luup.variable_get(serviceId,varName,deviceId)
     key = serviceId..varName..deviceId
     value = luupvars[key]

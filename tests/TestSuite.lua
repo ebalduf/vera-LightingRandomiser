@@ -12,13 +12,66 @@ TestCode = {} --class
     function TestCode:testStuff()
     end
 
-    function TestCode:testMakeTime()
+    function TestCode:testMakeTime1()
 
-        stamp = lrMakeTime('08:01:02','09:45:46')
-
+        -- case #1 normal
         startTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=8, min=1, sec=2})
         endTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=9, min=45, sec=46})
+        stamp = lrMakeTime('08:01:02','09:45:46')
+        assertGreaterThan(stamp,startTime)
+        assertLessThan(stamp,endTime)
+    end
 
+    function TestCode:testMakeTime2()
+        -- case #2 sunrise
+        startTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=8, min=1, sec=2})
+        endTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=9, min=45, sec=46})
+        stamp = lrMakeTime('sunrise','09:45:46')
+        assertGreaterThan(stamp,startTime)
+        assertLessThan(stamp,endTime)
+    end
+
+    function TestCode:testMakeTime3()
+        -- case #3 sunset
+        startTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=8, min=1, sec=2})
+        endTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=19, min=45, sec=46})
+        stamp = lrMakeTime('08:01:02','sunset')
+        assertGreaterThan(stamp,startTime)
+        assertLessThan(stamp,endTime)
+    end
+
+    function TestCode:testMakeTime4()
+        -- case #4 minus delta time
+        startTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=19, min=15, sec=46})
+        endTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=19, min=45, sec=46})
+        stamp = lrMakeTime('-30','sunset')
+        assertGreaterThan(stamp,startTime)
+        assertLessThan(stamp,endTime)
+    end
+
+    function TestCode:testMakeTime5()
+        -- case #5 plus delta time
+        startTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=8, min=1, sec=2})
+        endTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=8, min=36, sec=2})
+        stamp = lrMakeTime('sunrise','+35')
+        assertGreaterThan(stamp,startTime)
+        assertLessThan(stamp,endTime)
+    end
+
+    function TestCode:testMakeTime6()
+        -- case #6 wrong plus delta time
+        startTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=19, min=15, sec=46})
+        endTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=19, min=45, sec=46})
+        stamp = lrMakeTime('+30','sunset')
+        assertGreaterThan(stamp,startTime)
+        assertLessThan(stamp,endTime)
+    end
+
+    function TestCode:testMakeTime7()
+        -- case #7 wrong negative delta time
+        startTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=8, min=1, sec=2})
+        endTime = os.time({year=os.date('%Y'),month=os.date('%m'),day=os.date('%d'),hour=8, min=36, sec=2})
+        stamp = lrMakeTime('sunrise','-35')
         assertGreaterThan(stamp,startTime)
         assertLessThan(stamp,endTime)
     end
