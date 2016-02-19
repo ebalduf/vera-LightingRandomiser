@@ -1,4 +1,4 @@
-lrMyScedule = [[
+lrMySchedule = [[
 [
     {
         "zone": "lounge",

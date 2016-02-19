@@ -168,7 +168,7 @@ end
   ]]
 function lrGetSchedule()
     if(lrSchedule == nil) then
-        lrSetSchedule(lrMyScedule)
+        lrSetSchedule(lrMySchedule)
     end
 
     return lrSchedule
